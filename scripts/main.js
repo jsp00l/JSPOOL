@@ -25,7 +25,7 @@ function drawCircle(x, y, radius, color = Color.red) {
 
 
 
-drawCircle(50, 50, 100, Color.green);
+drawCircle(50, 50, 100, Color.red);
 
 
 
