@@ -95,8 +95,10 @@ CANVAS.addEventListener("mousedown", function getMousePos(evt) {
     let mouseY = evt.clientY - rect.top;
     let speedX = -100 * (b1.x - mouseX) / (b1.x + mouseX);
     let speedY = -100 * (b1.y - mouseY) / (b1.y + mouseY);
+    let xSign = speedX < 0 ? -1 : 1;
+    let ySign = speedY < 0 ? -1 : 1;
 
-    b1.speed = new Vector(speedX * 10 / speedX, speedY * 10 / speedY);
+    b1.speed = new Vector(xSign * speedX * 10 / speedX, ySign * speedY * 10 / speedY);
 });
 
 CANVAS.addEventListener("mousemove", function getMousePos(evt) {
