@@ -7,7 +7,7 @@ const COLOR = Object.freeze({
     red: 'red',
     green: 'green',
     blue: 'blue'
-})
+});
 const RED = "red";
 
 const LOG = (x) => console.log(x);
@@ -25,7 +25,44 @@ class Vector {
         this.x = x;
         this.y = y;
     }
+    add(otherVector) {
+        return new Vector(this.x + otherVector.x, this.y + otherVector.y);
+    }
+    sub(otherVector) {
+        return new Vector(this.x - otherVector.x, this.y - otherVector.y);
+    }
+    mul(otherVector) {
+        return new Vector(this.x * otherVector.x, this.y * otherVector.y);
+    }
+    mulScalar(scalar) {
+        return new Vector(this.x * scalar, this.y * scalar);
+    }
+    div(otherVector) {
+        return new Vector(this.x / otherVector.x, this.y / otherVector.y);
+    }
+    divScalar(scalar) {
+        return new Vector(this.x / scalar, this.y / scalar);
+    }
+    copy() {
+        return new Vector(this.x, this.y);
+    }
+    length() {
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+    }
+
+    unit() {
+        let u = new Vector(this.x, this.y);
+        u = u.divScalar(u.length());
+        return u;
+    }
+    dot(otherVector) {
+        let u = new Vector(this.x, this.y);
+        return u.x * otherVector.x + u.y + otherVector.y;
+    }
 }
+
+
+
 
 class Point {
     x = 0;

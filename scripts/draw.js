@@ -58,7 +58,7 @@ b1.color = COLOR.red;
 b1.x = 50;
 b1.y = 50;
 b1.radius = 25;
-b1.speed = new Vector(0, 0)
+b1.speed = new Vector(0, 0);
 
 
 
@@ -93,12 +93,30 @@ CANVAS.addEventListener("mousedown", function getMousePos(evt) {
     var rect = CANVAS.getBoundingClientRect();
     let mouseX = evt.clientX - rect.left;
     let mouseY = evt.clientY - rect.top;
+
+
+
+
+    let vectorToMouse = new Vector(mouseX - b1.x, mouseY - b1.y);
+    vectorToMouse = vectorToMouse.unit();
+
+    let distanceFromMouse = Math.sqrt(Math.pow(mouseX - b1.x, 2)
+        + Math.pow(mouseY - b1.y, 2));
+
+    let testSpeed = 100 * (distanceFromMouse / 800)
+
+    /*
     let speedX = -100 * (b1.x - mouseX) / (b1.x + mouseX);
     let speedY = -100 * (b1.y - mouseY) / (b1.y + mouseY);
     let xSign = speedX < 0 ? -1 : 1;
     let ySign = speedY < 0 ? -1 : 1;
+    */
 
-    b1.speed = new Vector(xSign * speedX * 10 / speedX, ySign * speedY * 10 / speedY);
+
+    vectorToMouse = vectorToMouse.mul(new Vector(testSpeed, testSpeed));
+
+
+    b1.speed = vectorToMouse;
 });
 
 CANVAS.addEventListener("mousemove", function getMousePos(evt) {
@@ -109,12 +127,12 @@ CANVAS.addEventListener("mousemove", function getMousePos(evt) {
 
 });
 
-
+var collisionOccured = false;
 const tick = () => {
 
     for (obj of ADO) {
-        obj.x += obj.speed.x;
-        obj.y += obj.speed.y;
+        obj.x += obj.speed.x * 1 / 5;
+        obj.y += obj.speed.y * 1 / 5;
         obj.speed.x *= 0.985;
         obj.speed.y *= 0.985;
         if (Math.abs(obj.speed.x) < 0.25 && Math.abs(obj.speed.y) < 0.25) {
@@ -140,57 +158,70 @@ const tick = () => {
             obj.speed.y = -obj.speed.y;
             obj.y += 1;
         }
+
         for (otherObj of ADO) {
             if (obj === otherObj) continue;
             let distance = (obj.x - otherObj.x) * (obj.x - otherObj.x) +
                 (obj.y - otherObj.y) * (obj.y - otherObj.y);
             distance = Math.sqrt(distance);
 
-            if (distance <= 52) {
+            if (distance <= 50) {
 
-                let inside = 50 - distance;
-                let sign;
-                if (obj.speed.x > 0) {
-                    signX = 1;
-                } else {
-                    signX = -1;
-                }
-                if (obj.speed.y > 0) {
-                    signY = 1;
-                } else {
-                    signY = -1;
-                }
-                if (otherObj.speed.x > 0) {
-                    otherSignX = 1;
-                } else {
-                    otherSignX = -1;
-                }
-                if (otherObj.speed.y > 0) {
-                    otherSignY = 1;
-                } else {
-                    otherSignY = -1;
-                }
-                if (inside > 0) {
-                    if (obj.speed.x !== 0) {
-                        obj.x += (inside / 2 + 1) * (-signX);
-                    }
-                    if (obj.speed.y !== 0) {
-                        obj.y += (inside / 2 + 1) * (-signY);
-                    }
-                    if (otherObj.speed.x !== 0) {
-                        otherObj.x += (inside / 2 + 1) * (-otherSignX);
-                    }
-                    if (otherObj.speed.y !== 0) {
-                        otherObj.y += (inside / 2 + 1) * (-otherSignY);
-                    }
-                }
 
-                let tempX = obj.speed.x;
-                let tempY = obj.speed.y;
-                obj.speed.x = otherObj.speed.x;
-                obj.speed.y = otherObj.speed.y;
-                otherObj.speed.x = tempX;
-                otherObj.speed.y = tempY;
+
+
+
+                let normalObj = new Vector(otherObj.x - obj.x, otherObj.y - obj.y);
+
+                const mtd = normalObj.mulScalar((50 - distance) / distance);
+
+
+
+                obj.x -= mtd.mulScalar(1 / 2).x;
+                obj.y -= mtd.mulScalar(1 / 2).y;
+
+                otherObj.x += mtd.mulScalar(1 / 2).x;
+                otherObj.y += mtd.mulScalar(1 / 2).y;
+
+
+
+
+
+                let unitNormalObjs = normalObj.unit();
+                let unitTangentNormalObjs = new Vector(-unitNormalObjs.y, unitNormalObjs.x);
+
+
+
+
+
+
+
+                const v1n = unitNormalObjs.dot(obj.speed);
+                const v1t = unitTangentNormalObjs.dot(obj.speed);
+                const v2n = unitNormalObjs.dot(otherObj.speed);
+                const v2t = unitTangentNormalObjs.dot(otherObj.speed);
+
+
+
+
+
+                let v1nTag = v2n;
+                let v2nTag = v1n;
+
+
+                v1nTag = unitNormalObjs.mulScalar(v1nTag);
+                const v1tTag = unitTangentNormalObjs.mulScalar(v1t);
+                v2nTag = unitNormalObjs.mulScalar(v2nTag);
+                const v2tTag = unitTangentNormalObjs.mulScalar(v2t);
+
+
+
+
+
+
+                obj.speed = v1nTag.add(v1tTag);
+                otherObj.speed = v2nTag.add(v2tTag);
+
 
 
 
@@ -198,4 +229,5 @@ const tick = () => {
         }
     }
 }
-let interval2 = setInterval(tick, 1000 / 120);
+var interval2 = setInterval(tick, 1000 / 240);
+
