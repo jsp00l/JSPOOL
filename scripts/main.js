@@ -57,7 +57,7 @@ class Vector {
     }
     dot(otherVector) {
         let u = new Vector(this.x, this.y);
-        return u.x * otherVector.x + u.y + otherVector.y;
+        return u.x * otherVector.x + u.y * otherVector.y;
     }
 }
 

@@ -177,11 +177,11 @@ const tick = () => {
 
 
 
-                obj.x -= mtd.mulScalar(1 / 2).x;
-                obj.y -= mtd.mulScalar(1 / 2).y;
+                obj.x -= Math.ceil(mtd.mulScalar(1 / 2).x * 2);
+                obj.y -= Math.ceil(mtd.mulScalar(1 / 2).y * 2);
 
-                otherObj.x += mtd.mulScalar(1 / 2).x;
-                otherObj.y += mtd.mulScalar(1 / 2).y;
+                otherObj.x += Math.ceil(mtd.mulScalar(1 / 2).x * 2);
+                otherObj.y += Math.ceil(mtd.mulScalar(1 / 2).y * 2);
 
 
 
@@ -191,39 +191,20 @@ const tick = () => {
                 let unitTangentNormalObjs = new Vector(-unitNormalObjs.y, unitNormalObjs.x);
 
 
-
-
-
-
-
                 const v1n = unitNormalObjs.dot(obj.speed);
                 const v1t = unitTangentNormalObjs.dot(obj.speed);
                 const v2n = unitNormalObjs.dot(otherObj.speed);
                 const v2t = unitTangentNormalObjs.dot(otherObj.speed);
 
+                let V_1n = unitNormalObjs.mulScalar(v2n);
+                let V_1t = unitTangentNormalObjs.mulScalar(v1t);
+
+                let V_2n = unitNormalObjs.mulScalar(v1n);
+                let V_2t = unitTangentNormalObjs.mulScalar(v2t);
 
 
-
-
-                let v1nTag = v2n;
-                let v2nTag = v1n;
-
-
-                v1nTag = unitNormalObjs.mulScalar(v1nTag);
-                const v1tTag = unitTangentNormalObjs.mulScalar(v1t);
-                v2nTag = unitNormalObjs.mulScalar(v2nTag);
-                const v2tTag = unitTangentNormalObjs.mulScalar(v2t);
-
-
-
-
-
-
-                obj.speed = v1nTag.add(v1tTag);
-                otherObj.speed = v2nTag.add(v2tTag);
-
-
-
+                obj.speed = V_1n.add(V_1t);
+                otherObj.speed = V_2n.add(V_2t);
 
             }
         }
