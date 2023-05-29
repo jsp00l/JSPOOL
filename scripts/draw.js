@@ -86,6 +86,16 @@ for (let i = 0; i < 5; ++i) {
 }
 
 
+let b4 = new Ball();
+b4.color = "black";
+b4.mass = 200;
+b4.x = 600;
+b4.y = 200;
+b4.radius = 25;
+b4.speed = new Vector(0, 0);
+ADO.push(b4);
+
+
 let linePoint2 = new Vector(0, 0);
 console.log(b1);
 b1.mass = 30;
