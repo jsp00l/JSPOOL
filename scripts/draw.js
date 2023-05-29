@@ -34,6 +34,7 @@ class Ball extends Drawable {
     mass = 0;
     color = COLOR.blue;
     radius = 10;
+    mass = 10;
     constructor(x, y, radius, color) {
         super();
 
@@ -71,9 +72,12 @@ b2.radius = 25;
 b2.speed = new Vector(0, 0);
 */
 
+let colorForCreation = ["orange", "green", "blue", "yellow", "purple"];
+
 for (let i = 0; i < 5; ++i) {
     let b3 = new Ball();
-    b3.color = "orange";
+    b3.color = colorForCreation[i];
+    b3.mass = i * 10 + 10;
     b3.x = 200;
     b3.y = 80 + 60 * i;
     b3.radius = 25;
@@ -84,7 +88,7 @@ for (let i = 0; i < 5; ++i) {
 
 let linePoint2 = new Vector(0, 0);
 console.log(b1);
-
+b1.mass = 30;
 ADO.push(b1);
 
 let interval = setInterval(DRAW, 1000 / 60);
@@ -133,8 +137,8 @@ const tick = () => {
     for (obj of ADO) {
         obj.x += obj.speed.x * 1 / 5;
         obj.y += obj.speed.y * 1 / 5;
-        obj.speed.x *= 0.985;
-        obj.speed.y *= 0.985;
+        obj.speed.x *= 0.99;
+        obj.speed.y *= 0.99;
         if (Math.abs(obj.speed.x) < 0.25 && Math.abs(obj.speed.y) < 0.25) {
             obj.speed.x = 0;
             obj.speed.y = 0;
@@ -196,10 +200,17 @@ const tick = () => {
                 const v2n = unitNormalObjs.dot(otherObj.speed);
                 const v2t = unitTangentNormalObjs.dot(otherObj.speed);
 
-                let V_1n = unitNormalObjs.mulScalar(v2n);
+                let m1 = obj.mass;
+                let m2 = otherObj.mass;
+
+                let v_1n = (v1n * (m1 - m2) + 2 * m2 * v2n) / (m1 + m2);
+                let v_2n = (v2n * (m2 - m1) + 2 * m1 * v1n) / (m1 + m2);
+
+
+                let V_1n = unitNormalObjs.mulScalar(v_1n);
                 let V_1t = unitTangentNormalObjs.mulScalar(v1t);
 
-                let V_2n = unitNormalObjs.mulScalar(v1n);
+                let V_2n = unitNormalObjs.mulScalar(v_2n);
                 let V_2t = unitTangentNormalObjs.mulScalar(v2t);
 
 
@@ -210,5 +221,5 @@ const tick = () => {
         }
     }
 }
-var interval2 = setInterval(tick, 1000 / 240);
+var interval2 = setInterval(tick, 1000 / 60);
 
