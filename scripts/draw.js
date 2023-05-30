@@ -41,6 +41,7 @@ class Ball extends Drawable {
     color = COLOR.blue;
     radius = 10;
     mass = 10;
+    isFog = false;
     constructor(x, y, radius, color) {
         super();
 
@@ -148,8 +149,39 @@ CANVAS.addEventListener("mousemove", function getMousePos(evt) {
 });
 
 var collisionOccured = false;
-const tick = () => {
+var FOG = [];
+for (let i = 0; i < 17; ++i) {
+    for (let j = 0; j < 17; ++j) {
+        let fogBall = new Ball();
+        fogBall.color = "white";
 
+        fogBall.x = 0 + i * 50;
+        fogBall.y = 0 + j * 50;
+        fogBall.radius = 50;
+        fogBall.speed = new Vector(0, 0);
+        fogBall.visible = true;
+        FOG.push(fogBall);
+    }
+}
+
+
+
+
+const tick = () => {
+    for (fogBall of FOG) {
+        let distance = (b1.x - fogBall.x) * (b1.x - fogBall.x) +
+            (b1.y - fogBall.y) * (b1.y - fogBall.y);
+
+        distance = Math.sqrt(distance);
+
+        if (distance <= 75) {
+            fogBall.visible = false;
+            const index = FOG.indexOf(fogBall);
+
+            FOG.splice(index, 1);
+        }
+        if (fogBall.visible) { fogBall.draw(); }
+    }
     for (obj of ADO) {
         obj.x += obj.speed.x * 1 / 5;
         obj.y += obj.speed.y * 1 / 5;
