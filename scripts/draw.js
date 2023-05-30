@@ -7,6 +7,12 @@ const DRAW = () => {
     CTX.fillStyle = "green";
     CTX.fillRect(0, 0, CANVAS.width, CANVAS.height);
     drawLine(b1.x, b1.y, linePoint2.x, linePoint2.y, 2);
+    drawCircle(0, 0, 40, "black");
+    drawCircle(0, CANVAS.height, 40, "black");
+    drawCircle(CANVAS.width, 0, 40, "black");
+    drawCircle(CANVAS.width, CANVAS.height, 40, "black");
+
+
 
     for (obj of ADO) {
 
@@ -156,19 +162,19 @@ const tick = () => {
         /*if (Math.abs(obj.speed.y) < 0.25) {
             obj.speed.y = 0;
         }*/
-        if (obj.x >= CANVAS.width - 25) {
+        if (obj.x >= CANVAS.width - 25 && obj.y >= 40 && obj.y <= CANVAS.height - 40) {
             obj.speed.x = -obj.speed.x;
             obj.x -= 1;
         }
-        if (obj.x <= 0 + 25) {
+        if (obj.x <= 0 + 25 && obj.y >= 40 && obj.y <= CANVAS.height - 40) {
             obj.speed.x = -obj.speed.x;
             obj.x += 1;
         }
-        if (obj.y >= CANVAS.height - 25) {
+        if (obj.y >= CANVAS.height - 25 && obj.x >= 40 && obj.x <= CANVAS.width - 40) {
             obj.speed.y = -obj.speed.y;
             obj.y -= 1;
         }
-        if (obj.y <= 0 + 25) {
+        if (obj.y <= 0 + 25 && obj.x >= 40 && obj.x <= CANVAS.width - 40) {
             obj.speed.y = -obj.speed.y;
             obj.y += 1;
         }
